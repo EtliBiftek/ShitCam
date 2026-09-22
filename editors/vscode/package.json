@@ -1,0 +1,35 @@
+{
+  "name": "shitcam-syntax",
+  "displayName": "ShitCam Language Support",
+  "description": "Syntax highlighting and language support for ShitCam programming language (.sc)",
+  "version": "0.1.0",
+  "publisher": "shitcam",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "shitcam",
+        "aliases": [
+          "ShitCam",
+          "shitcam"
+        ],
+        "extensions": [
+          ".sc"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "shitcam",
+        "scopeName": "source.shitcam",
+        "path": "./syntaxes/shitcam.tmLanguage.json"
+      }
+    ]
+  }
+}
