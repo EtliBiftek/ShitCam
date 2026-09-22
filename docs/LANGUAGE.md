@@ -188,6 +188,8 @@ import "lib/helpers.sc"
 | `set_env(name, val)` | sets environment variable in process, 1 or 0 |
 | `system(cmd)` | runs command synchronously via CreateProcessA, returns exit code |
 | `set_color(code)` | sets console text attribute (0..15 colors) |
+| `clear_screen()` | resets console cursor position to top-left (0, 0) |
+| `key_pressed([key])` | non-blocking key check (VK code or char, default: Space/Up/W); returns 1 if pressed, 0 otherwise |
 | `set_clipboard(text)` | copies text string to Windows clipboard |
 | `get_clipboard()` | reads text string from Windows clipboard |
 | `http_get(url)` | sends HTTP/HTTPS GET request via WinINet, returns body string or null |

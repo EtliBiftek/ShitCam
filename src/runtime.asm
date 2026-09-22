@@ -64,6 +64,10 @@ section .data
     s_set_clip      db "set_clipboard", 0
     s_get_clip      db "get_clipboard", 0
     s_http_get      db "http_get", 0
+    s_key_pressed   db "key_pressed", 0
+    s_clear_screen  db "clear_screen", 0
+
+    async_key_proc  db "GetAsyncKeyState", 0
 
     open_clip_proc  db "OpenClipboard", 0
     close_clip_proc db "CloseClipboard", 0
@@ -97,6 +101,7 @@ section .bss
     net_bytes_read resd 1
     proc_info      resb 24
     start_info     resb 104
+    async_key_ptr  resq 1
 
 section .text
 

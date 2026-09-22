@@ -495,6 +495,8 @@ lex_string:
     cmp r12, r14
     jae .unterminated
     movzx eax, byte [r13 + r12]
+    cmp al, 'e'
+    je .esc_ok
     cmp al, 'n'
     je .esc_ok
     cmp al, 't'
@@ -532,6 +534,8 @@ lex_string:
 .esc_copy:
     inc r12
     movzx eax, byte [r13 + r12]
+    cmp al, 'e'
+    je .c_e
     cmp al, 'n'
     je .c_n
     cmp al, 't'
@@ -543,6 +547,11 @@ lex_string:
     cmp al, '"'
     je .c_q
     jmp .badesc
+.c_e:
+    mov byte [rdx], 27
+    inc rdx
+    inc r12
+    jmp .copy
 .c_n:
     mov byte [rdx], 10
     inc rdx

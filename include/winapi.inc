@@ -33,6 +33,7 @@ extern CreateDirectoryA
 extern GetEnvironmentVariableA
 extern SetEnvironmentVariableA
 extern SetConsoleTextAttribute
+extern SetConsoleCursorPosition
 extern GlobalAlloc
 extern GlobalLock
 extern GlobalUnlock

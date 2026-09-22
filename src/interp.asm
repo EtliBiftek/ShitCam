@@ -958,6 +958,28 @@ interp_eval:
     pop r15
     test eax, eax
     jnz .builtin_http_get
+    mov rsi, [r13+16]
+    mov rdi, s_key_pressed
+    push r15
+    push r14
+    push r13
+    call streq
+    pop r13
+    pop r14
+    pop r15
+    test eax, eax
+    jnz .builtin_key_pressed
+    mov rsi, [r13+16]
+    mov rdi, s_clear_screen
+    push r15
+    push r14
+    push r13
+    call streq
+    pop r13
+    pop r14
+    pop r15
+    test eax, eax
+    jnz .builtin_clear_screen
     jmp .user_call
 .builtin_print:
     xor r12d, r12d
@@ -1958,6 +1980,99 @@ interp_eval:
     add rsp, 0x20
 .http_null:
     mov rax, SC_T_NULL
+    xor edx, edx
+    jmp .done
+
+.builtin_clear_screen:
+    mov ecx, STD_OUTPUT_HANDLE
+    sub rsp, 0x20
+    call GetStdHandle
+    mov rcx, rax
+    xor edx, edx
+    call SetConsoleCursorPosition
+    add rsp, 0x20
+    mov rax, SC_T_NULL
+    xor edx, edx
+    jmp .done
+
+.builtin_key_pressed:
+    mov rax, [async_key_ptr]
+    test rax, rax
+    jnz .kp_ready
+    lea rcx, [user32_dll]
+    sub rsp, 0x20
+    call LoadLibraryA
+    add rsp, 0x20
+    test rax, rax
+    jz .kp_fail
+    mov rcx, rax
+    lea rdx, [async_key_proc]
+    sub rsp, 0x20
+    call GetProcAddress
+    add rsp, 0x20
+    test rax, rax
+    jz .kp_fail
+    mov [async_key_ptr], rax
+
+.kp_ready:
+    test r15, r15
+    jz .kp_default
+    mov rax, [r14]
+    call interp_eval
+    cmp rax, SC_T_STRING
+    je .kp_str
+    mov ecx, edx
+    jmp .kp_call
+.kp_str:
+    test rdx, rdx
+    jz .kp_fail
+    movzx ecx, byte [rdx]
+    cmp cl, 'a'
+    jb .kp_call
+    cmp cl, 'z'
+    ja .kp_call
+    sub ecx, 32
+.kp_call:
+    mov rax, [async_key_ptr]
+    sub rsp, 0x20
+    call rax
+    add rsp, 0x20
+    test ax, 0x8000
+    jnz .kp_true
+    jmp .kp_false
+
+.kp_default:
+    mov ecx, 32
+    mov rax, [async_key_ptr]
+    sub rsp, 0x20
+    call rax
+    add rsp, 0x20
+    test ax, 0x8000
+    jnz .kp_true
+    mov ecx, 38
+    mov rax, [async_key_ptr]
+    sub rsp, 0x20
+    call rax
+    add rsp, 0x20
+    test ax, 0x8000
+    jnz .kp_true
+    mov ecx, 87
+    mov rax, [async_key_ptr]
+    sub rsp, 0x20
+    call rax
+    add rsp, 0x20
+    test ax, 0x8000
+    jnz .kp_true
+    jmp .kp_false
+
+.kp_true:
+    mov rax, SC_T_INT
+    mov rdx, 1
+    jmp .done
+
+.kp_false:
+.kp_fail:
+    mov rax, SC_T_INT
     xor edx, edx
     jmp .done
 
